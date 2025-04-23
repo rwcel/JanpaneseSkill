@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12351d10346caff47b6de650a69b28e4, type: 3}
+  m_Name: WordDay4
+  m_EditorClassIdentifier: 
+  words:
+  - word1: "\u610F"
+    word2: "\u6B32"
+    read1: "\u3044"
+    read2: "\u3088\u304F"
+    meaning: "\uC758\uC695"
+  - word1: "\u6069"
+    word2: "\u6075"
+    read1: "\u304A\u3093"
+    read2: "\u3051\u3044"
+    meaning: "\uC740\uD61C"
