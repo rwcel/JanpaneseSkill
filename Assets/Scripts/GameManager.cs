@@ -17,7 +17,8 @@ public class GameManager : MonoBehaviour
         // 선택한 데이터에 따라 설정 + 셔플
         _words = ShuffleWords(GetWordSO());
         
-        _uiManager.OnStart(_words.Count);
+        _uiManager.OnStart();
+        _uiManager.SetData(_words.Count, SetWord);
         
         // 시작?
         SetWord();
@@ -43,16 +44,23 @@ public class GameManager : MonoBehaviour
 
     private void SetWord()
     {
+        if (IsEndWord())
+        {
+            Debug.LogError("초기화면으로 가야함");
+            return;
+        }
+        
         var wordBase = GetWordBase();
         
         _uiManager.SetWord(wordBase);
     }
 
+    private bool IsEndWord() => _words.Count <= 0;
+
     private WordBase GetWordBase()
     {
-        if (_words.Count <= 0)
+        if (IsEndWord())        // 이쪽으로 들어오면 안됨
         {
-            Debug.LogError("끝처리 필요");
             return new WordBase();      // null처리 필요
         }
         

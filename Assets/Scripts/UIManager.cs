@@ -1,6 +1,7 @@
 using UniRx;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
@@ -12,7 +13,7 @@ public class UIManager : MonoBehaviour
     private TMP_InputField _inputField;
 
     [SerializeField] 
-    private Button _readButton;
+    private Button _readButton, _nextButton;
 
     
     [SerializeField] 
@@ -22,7 +23,10 @@ public class UIManager : MonoBehaviour
     private TextMeshProUGUI _wrongCountText;
 
     private GameObject _goWord, _goRead, _goMean;
-    private GameObject _goReadButton;
+    private GameObject _goReadButton, _goNextButton;
+    
+    private static readonly Color COLOR_MISS = new Color(1f,0.55f,0.58f);
+    private static readonly Color COLOR_CORRECT = new Color(0.55f,1f,0.58f);
 
 
     private WordBase _curWord;
@@ -31,15 +35,11 @@ public class UIManager : MonoBehaviour
     private IntReactiveProperty _wrongCount = new IntReactiveProperty(0);
 
     
-    public void OnStart(int maxCount)
+    public void OnStart()
     {
         SetData();
 
         InitData();
-
-        _maxIdx.Value = maxCount;
-        _curIdx.Value = 0;
-        _wrongCount.Value = 0;
     }
 
     private void SetData()
@@ -49,6 +49,7 @@ public class UIManager : MonoBehaviour
         _goMean = _meanText.gameObject;
 
         _goReadButton = _readButton.gameObject;
+        _goNextButton =  _nextButton.gameObject;
         
         _readButton.onClick.AddListener(OnReadButtonClick);
         
@@ -60,6 +61,15 @@ public class UIManager : MonoBehaviour
             .AddTo(this);
         _wrongCount.SubscribeToTextMeshPro(_wrongCountText)
             .AddTo(this);
+    }
+    
+    public void SetData(int maxCount, UnityAction onClickNextButton)
+    {
+        _maxIdx.Value = maxCount;
+        _curIdx.Value = 0;
+        _wrongCount.Value = 0;
+        
+        _nextButton.onClick.AddListener(onClickNextButton);
     }
 
     private void InitData()
@@ -74,6 +84,7 @@ public class UIManager : MonoBehaviour
         _goMean.SetActive(false);
         
         _goReadButton.SetActive(true);
+        _goNextButton.SetActive(false);
         
         _inputField.text = "";
     }
@@ -108,11 +119,20 @@ public class UIManager : MonoBehaviour
     /// </summary>
     private void OnCheckMeaning(string word)
     {
-        _goMean.SetActive(true);
-
-        if(!word.Equals(_curWord.meaning))
-            _wrongCount.Value++;
+        if (string.IsNullOrEmpty(word))
+            return;
         
         Debug.Log($"{word} == {_curWord.meaning}");
+
+        var isCorrect = word.Equals(_curWord.meaning);
+        if(!isCorrect)
+            _wrongCount.Value++;
+        
+        var buttonColors = _nextButton.colors; 
+        buttonColors.normalColor = isCorrect ? COLOR_CORRECT : COLOR_MISS;
+        _nextButton.colors = buttonColors;
+        
+        _goMean.SetActive(true);
+        _goNextButton.SetActive(true);
     }
 }
